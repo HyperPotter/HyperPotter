@@ -55,7 +55,7 @@ Pre-trained HyperPotter model are available [here](https://doi.org/10.5281/zenod
 
 ## 3. Third-Party Code Acknowledgement
 
-This repository contains code from the open-source project associated with the paper *"Automatic speaker verification spoofing and deepfake detection using wav2vec 2.0 and data augmentation"* by Tak et al. (2022), presented at The Speaker and Language Recognition Workshop. The code is available at [GitHub repository link](https://github.com/author/repository).
+This repository contains code from the open-source project associated with the paper *"Automatic speaker verification spoofing and deepfake detection using wav2vec 2.0 and data augmentation"* by Tak et al. (2022), presented at The Speaker and Language Recognition Workshop. The code is available at [GitHub repository link](https://github.com/TakHemlata/SSL_Anti-spoofing).
 
 We used the following files from this repository for our experiments:
 - `./core_scripts`
