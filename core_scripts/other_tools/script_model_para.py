@@ -1,14 +1,4 @@
-#!/usr/bin/env python
-"""
-A simple wrapper to show parameter of the model
 
-Usage:
-  # go to the model directory, then
-  $: python script_model_para.py 
-  
-  We assume model.py and config.py are available in the project directory.
-
-"""
 
 from __future__ import print_function
 import os
@@ -19,9 +9,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 import importlib
 
-__author__ = "Xin Wang"
-__email__ = "wangxin@nii.ac.jp"
-__copyright__ = "Copyright 2020, Xin Wang"
 
 
 def f_model_show(pt_model):
@@ -31,7 +18,6 @@ def f_model_show(pt_model):
                                                                              
     Print the informaiton of the model                                       
     """
-    #f_model_check(pt_model)
     
     print(pt_model)
     num = sum(p.numel() for p in pt_model.parameters() if p.requires_grad)

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 log_parser
 
@@ -13,9 +12,6 @@ import os
 import re
 import sys
 
-__author__ = "Xin Wang"
-__email__ = "wangxin@nii.ac.jp"
-__copyright__ = "Copyright 2020, Xin Wang"
 
 
 def f_read_log_err(file_path, train_num, val_num):

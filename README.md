@@ -52,25 +52,3 @@ CUDA_VISIBLE_DEVICES=0 python main.py --dev \
 --proto_banks_path='/path/to/proto_bank.pt'
 ```
 Pre-trained HyperPotter model are available [here](https://doi.org/10.5281/zenodo.18377410)
-
-## 3. Third-Party Code Acknowledgement
-
-This repository contains code from the open-source project associated with the paper *"Automatic speaker verification spoofing and deepfake detection using wav2vec 2.0 and data augmentation"* by Tak et al. (2022), presented at The Speaker and Language Recognition Workshop. The code is available at [GitHub repository link](https://github.com/TakHemlata/SSL_Anti-spoofing).
-
-We used the following files from this repository for our experiments:
-- `./core_scripts`
-  
-The original code is licensed under the MIT License.
-
-### 3.1 BibTeX Citation
-
-If you wish to cite the original work associated with the code, you can use the following BibTeX entry:
-
-```bibtex
-@inproceedings{tak2022automatic,
-  title={Automatic speaker verification spoofing and deepfake detection using wav2vec 2.0 and data augmentation},
-  author={Tak, Hemlata and Todisco, Massimiliano and Wang, Xin and Jung, Jee-weon and Yamagishi, Junichi and Evans, Nicholas},
-  booktitle={The Speaker and Language Recognition Workshop},
-  year={2022}
-}
-```

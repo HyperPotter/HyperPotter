@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 data_io
 
@@ -21,9 +20,6 @@ import scipy.io.wavfile
 
 import core_scripts.data_io.io_tools as nii_io_tk
 
-__author__ = "Xin Wang"
-__email__ = "wangxin@nii.ac.jp"
-__copyright__ = "Copyright 2021, Xin Wang"
 
 def wavformRaw2MuLaw(wavdata, bit=16, signed=True, quanLevel = 256.0):
     """ 
@@ -44,8 +40,6 @@ def wavformRaw2MuLaw(wavdata, bit=16, signed=True, quanLevel = 256.0):
     if wavdata.dtype != np.int16 and wavdata.dtype != np.int32:
         print("Input waveform data in not int16 or int32")
         sys.exit(1)
-
-    # convert to float numbers
     if signed==True:
         wavdata = np.array(wavdata, dtype=np.float32) / \
                   np.power(2.0, bit-1)
@@ -54,7 +48,6 @@ def wavformRaw2MuLaw(wavdata, bit=16, signed=True, quanLevel = 256.0):
                   np.power(2.0, bit)
     
     tmp_quan_level = quanLevel - 1
-    # mu-law compansion
     wavtrans = np.sign(wavdata) * \
                np.log(1.0 + tmp_quan_level * np.abs(wavdata)) / \
                np.log(1.0 + tmp_quan_level)
@@ -99,8 +92,6 @@ def float2wav(rawData, wavFile, bit=16, samplingRate = 16000):
     rawData = rawData * np.power(2.0, bit-1)
     rawData[rawData >= np.power(2.0, bit-1)] = np.power(2.0, bit-1)-1
     rawData[rawData < -1*np.power(2.0, bit-1)] = -1*np.power(2.0, bit-1)
-    
-    # write as signed 16bit PCM
     if bit == 16:
         rawData  = np.asarray(rawData, dtype=np.int16)
     elif bit == 32:
@@ -145,13 +136,9 @@ def waveFloatToPCMFile(waveData, wavFile, bit=16, sr=16000):
        bit: PCM bits
        sr: sampling rate
     """
-    
-    # recover to 16bit range [-32768, +32767]
     rawData  = waveData * np.power(2.0, bit-1)
     rawData[rawData >= np.power(2.0, bit-1)] = np.power(2.0, bit-1)-1
     rawData[rawData < -1*np.power(2.0, bit-1)] = -1*np.power(2.0, bit-1)
-    
-    # write as signed 16bit PCM
     if bit == 16:
         rawData  = np.asarray(rawData, dtype=np.int16)
     elif bit == 32:
@@ -165,49 +152,23 @@ def waveFloatToPCMFile(waveData, wavFile, bit=16, sr=16000):
 
 
 def buffering(x, n, p=0, opt=None):
-    """buffering(x, n, p=0, opt=None)
-    input
-    -----
-      x: np.array, input signal, (length, )
-      n: int, window length
-      p: int, overlap, not frame shift
-    
-    outpupt
-    -------
-      output: np.array, framed buffer, (frame_num, frame_length)
-      
-    Example
-    -------
-       framed = buffer(wav, 320, 80, 'nodelay')
-       
-    Code from https://stackoverflow.com/questions/38453249/
-    """
     if opt not in ('nodelay', None):
         raise ValueError('{} not implemented'.format(opt))
     i = 0
     if opt == 'nodelay':
-        # No zeros at array start
         result = x[:n]
         i = n
     else:
-        # Start with `p` zeros
         result = np.hstack([np.zeros(p), x[:n-p]])
         i = n-p
-        
-    # Make 2D array, cast to list for .append()
     result = list(np.expand_dims(result, axis=0))
 
     while i < len(x):
-        # Create next column, add `p` results from last col if given
         col = x[i:i+(n-p)]
         if p != 0:
             col = np.hstack([result[-1][-p:], col])
-
-        # Append zeros if last row and not length `n`
         if len(col):
             col = np.hstack([col, np.zeros(n - len(col))])
-
-        # Combine result with next row
         result.append(np.array(col))
         i += (n - p)
 
@@ -281,16 +242,11 @@ def silence_handler(wav, sr, fl=320, fs=80,
     
     def ignore_short_seg(frame_tag, seg_len_thres):
         frame_tag_new = np.zeros_like(frame_tag) + frame_tag
-        # boundary of each segment
         seg_bound = np.diff(np.concatenate(([0], frame_tag, [0])))
-        # start of each segment
         seg_start = np.argwhere(seg_bound == 1)[:, 0]
-        # end of each segment
         seg_end = np.argwhere(seg_bound == -1)[:, 0]
         assert seg_start.shape[0] == seg_end.shape[0], \
             "Fail to extract segment boundaries"
-        
-        # length of segment
         seg_len = seg_end - seg_start
         seg_short_ids = np.argwhere(seg_len < seg_len_thres)[:, 0]
         for idx in seg_short_ids:
@@ -298,21 +254,11 @@ def silence_handler(wav, sr, fl=320, fs=80,
             end_frame_idx = seg_end[idx]
             frame_tag_new[start_frame_idx:end_frame_idx] = 0
         return frame_tag_new
-    
-    # work on non-speech, 1-frame_tag indicates non-speech frames
     frame_process_sil = ignore_short_seg(1-frame_tag, seg_len_thres)
-    # reverse the sign
     frame_process_sil = 1 - frame_process_sil
-    
-    # work on speech
     frame_process_all = ignore_short_seg(frame_process_sil, seg_len_thres)
-    
-    # separate non-speech and speech segments
-    #  do overlap and add
     frame_tag = frame_process_all
-    # buffer for speech segments
     spe_buf = np.zeros([np.sum(frame_tag) * fs + fl], dtype=wav.dtype)
-    # buffer for non-speech segments
     sil_buf = np.zeros([np.sum(1-frame_tag) * fs + fl], dtype=wav.dtype)
     spe_fr_pt = 0
     non_fr_pt = 0

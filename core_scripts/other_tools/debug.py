@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 debug.py
 
@@ -16,9 +15,6 @@ import torch
 
 from core_scripts.data_io import io_tools as nii_io
 
-__author__ = "Xin Wang"
-__email__ = "wangxin@nii.ac.jp"
-__copyright__ = "Copyright 2020, Xin Wang"
 
 def convert_data_for_debug(data):
     """ data_new = convert_data_for_debug(data)
@@ -60,8 +56,6 @@ def qw(data, path=None):
         os.mkdir(os.path.dirname(path))
     except OSError:
         pass
-
-    # write to IO
     nii_io.f_write_raw_mat(convert_data_for_debug(data), path)
     return
                         
@@ -89,15 +83,10 @@ class data_probe:
     produced from the inference or training stage
     """
     def __init__(self):
-        # a list to store all intermediate data
         self.data_buf = []
-        # a single array to store the data
         self.data_concated = None
-        # default data convert method
         self.data_convert_method = convert_data_for_debug
-        # default method to dump method
         self.data_dump_method = nii_io.pickle_dump
-        # dump file name extension
         self.dump_file_ext = '.pkl'
         return
 
@@ -134,17 +123,11 @@ class data_probe:
         -----
           output_path: str, path to store the dumped data
         """
-        # add additional infor to output_path name
         output_path_new = self._dump_file_path(output_path)
         try:
             os.mkdir(os.path.dirname(output_path_new))
         except OSError:
             pass
-
-        ## merge data if it has not been done
-        #if self.data_concated is None:
-        #    self.merge_data()
-        #nii_io.f_write_raw_mat(self.data_concated, output_path_new)
 
         self.data_dump_method(self.data_buf, output_path_new)
         print("Data dumped to {:s}".format(output_path_new))

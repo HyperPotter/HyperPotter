@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 stats.py
 
@@ -13,9 +12,6 @@ import numpy as np
 import core_scripts.other_tools.display as nii_display
 import core_scripts.data_io.conf as nii_dconf
 
-__author__ = "Xin Wang"
-__email__ = "wangxin@nii.ac.jp"
-__copyright__ = "Copyright 2020, Xin Wang"
 
 
 def f_var2std(var):
@@ -58,59 +54,39 @@ def f_online_mean_std(data, mean_old, var_old, cnt_old):
       var: var, np.array [dimension]
       count: accumulated data number, = num_count + data.shape[0]
 
-    Ref. parallel algorithm                                                 
-    https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance  
     """
 
     try:
-        # how many time steps (number of rows) in this data
         cnt_this = data.shape[0]
-
-        # if input data is empty, don't update
         if cnt_this == 0:
             return mean_old, var_old, cnt_old
         
         if data.ndim == 1:
-            # single dimension data, 1d array
             mean_this = data.mean()
             var_this = data.var()
             dim = 1
         else:
-            # multiple dimension data, 2d array
             mean_this = data.mean(axis=0)
             var_this = data.var(axis=0)
             dim = data.shape[1]
-            
-        # difference of accumulated mean and data mean
         diff_mean = mean_this - mean_old
-
-        # new mean and var
         new_mean = np.zeros([dim], dtype=nii_dconf.h_dtype)
         new_var = np.zeros([dim], dtype=nii_dconf.h_dtype)
-
-        # update count
         updated_count = cnt_old + cnt_this
-        
-        # update mean
         new_mean = mean_old + diff_mean * (float(cnt_this) /
                                            (cnt_old + cnt_this))
-        # update var
         if cnt_old == 0:
-            # if this is the first data
             if data.ndim == 1:
-                # remember that var is array, not scalar
                 new_var[0] = var_this
             else:
                 new_var = var_this
         else:
-            # not first data
             new_var = (var_old * (float(cnt_old) / updated_count) 
                        + var_this * (float(cnt_this)/ updated_count) 
                        + (diff_mean * diff_mean
                           / (float(cnt_this)/cnt_old 
                              + float(cnt_old)/cnt_this
                              + 2.0)))
-        # done
         return new_mean, new_var, updated_count
         
     except ValueError:

@@ -1,35 +1,14 @@
-#!/usr/bin/env python
-"""
-Simple text processer for English
-
-Based on https://github.com/fatchord/WaveRNN
-"""
 
 import os
 import sys
 import re
 
 from core_scripts.data_io.text_process import toolkit_all
-
-__author__ = "Xin Wang"
-__email__ = "wangxin@nii.ac.jp"
-__copyright__ = "Copyright 2021, Xin Wang"
-
-######
-## Pool of symbols
-######
-
-# symbols
 _pad = '_'
 _punctuation = '!\'(),.:;? '
 _special = '-'
 _letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
 _skip_symbols = ['_', '~']
-
-# ARPAbet symbols 
-# http://www.speech.cs.cmu.edu/cgi-bin/cmudict?in=C+M+U+Dictionary
-# vowels are combined with the three possible lexical stree symbols 0 1 2
-# see http://svn.code.sf.net/p/cmusphinx/code/trunk/cmudict/cmudict-0.7b.symbols
 _arpabet_symbols_raw = [
     'AA', 'AA0', 'AA1', 'AA2', 'AE', 'AE0', 'AE1', 'AE2', 
     'AH', 'AH0', 'AH1', 'AH2', 'AO', 'AO0', 'AO1', 'AO2', 
@@ -43,13 +22,8 @@ _arpabet_symbols_raw = [
     'UW1', 'UW2', 'V', 'W', 'Y', 'Z', 'ZH']
 _arpabet_symbol_marker = '@'
 _arpabet_symbols = [_arpabet_symbol_marker + x for x in _arpabet_symbols_raw]
-
-# create pool of symbols
 _symbols = [_pad] + list(_special) + list(_punctuation) \
            + list(_letters) + _arpabet_symbols
-
-# create the mapping table
-#  x+1 so that 0 can be reserved for other purposes
 _symbol_to_index = {y: x+1 for x, y in enumerate(_symbols)}
 
 def symbol_num():
@@ -60,12 +34,6 @@ def symbol2index(x):
 
 def index2symbol(x):
     return _symbols[x-1]
-
-#####
-## Functions for text normalization
-## I cannot write a full fludged text normalizer here.
-## Just for place holder
-#####
 _whitespace_re = re.compile(r'\s+')
 
 _number_map = {'1': 'one', '2': 'two', '3': 'three',
@@ -91,21 +59,10 @@ def text_case_convert(text):
     return text.lower()
 
 def text_whitespace_convert(text):
-    """ Collapse all redundant white spaces
-    e.g., 'qweq 1231   123151' -> 'qweq 1231 123151'
-    """
     return re.sub(_whitespace_re, ' ', text)
 
 def text_normalizer(text):
-    """ Text normalizer
-
-    In this code, only lower case conversion and white space is handled
-    """
     return text_whitespace_convert(text_numbers(text_case_convert(text)))
-
-#####
-## Functions to convert symbol to index
-#####
 
 
 def flag_convert_symbol(symbol):
@@ -151,27 +108,18 @@ def arpabet2indices(arpa_text):
     """
     tmp = [_arpabet_symbol_marker + x for x in arpa_text.split()]
     return [symbol2index(x) for x in tmp if flag_convert_symbol(x)]
-    
-#####
-## Main function
-#####
 
 
 def text2code(text):
     """ Convert English text and ARPAbet into code symbols (int)
     """
     if text.startswith(toolkit_all._curly_symbol):
-        # phonemic annotation, no normalization
         return arpabet2indices(text.lstrip(toolkit_all._curly_symbol))
     else:
-        # normal text, do normalization before conversion
-        # text normalization
         text_normalized = text_normalizer(text)
         return rawtext2indices(text_normalized)
-    # done
 
 def code2text(codes):
-    # x-1 because  _symbol_to_index
     txt_tmp = [index2symbol(x) for x in codes]
     txt_tmp = ''.join(txt_tmp)
     return text_whitespace_convert(txt_tmp.replace(_arpabet_symbol_marker, ' '))

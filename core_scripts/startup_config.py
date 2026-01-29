@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 startup_config
 
@@ -14,9 +13,6 @@ import importlib
 import random
 import numpy as np
 
-__author__ = "Xin Wang"
-__email__ = "wangxin@nii.ac.jp"
-__copyright__ = "Copyright 2020, Xin Wang"
 
 
 def set_random_seed(random_seed, args=None):
@@ -29,16 +25,10 @@ def set_random_seed(random_seed, args=None):
       random_seed: integer random seed
       args: argue parser
     """
-    
-    # initialization                                       
     torch.manual_seed(random_seed)
     random.seed(random_seed)
     np.random.seed(random_seed)
     os.environ['PYTHONHASHSEED'] = str(random_seed)
-
-    #For torch.backends.cudnn.deterministic
-    #Note: this default configuration may result in RuntimeError
-    #see https://pytorch.org/docs/stable/notes/randomness.html    
     if args is None:
         cudnn_deterministic = True
         cudnn_benchmark = False

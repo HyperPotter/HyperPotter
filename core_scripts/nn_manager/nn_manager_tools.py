@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 nn_manager
 
@@ -15,11 +14,6 @@ import core_scripts.other_tools.str_tools as nii_str_tk
 import core_scripts.other_tools.display as nii_display
 import core_scripts.nn_manager.nn_manager_conf as nii_nn_manage_conf
 
-__author__ = "Xin Wang"
-__email__ = "wangxin@nii.ac.jp"
-__copyright__ = "Copyright 2020, Xin Wang"
-
-#############################################################
 
 def f_state_dict_wrapper(state_dict, data_parallel=False):
     """ a wrapper to take care of state_dict when using DataParallism
@@ -27,16 +21,11 @@ def f_state_dict_wrapper(state_dict, data_parallel=False):
     f_model_load_wrapper(state_dict, data_parallel):
     state_dict: pytorch state_dict
     data_parallel: whether DataParallel is used
-    
-    https://discuss.pytorch.org/t/solved-keyerror-unexpected-
-    key-module-encoder-embedding-weight-in-state-dict/1686/3
     """
     if data_parallel is True:
-        # if data_parallel is used
         new_state_dict = OrderedDict()
         for k, v in state_dict.items():
             if not k.startswith('module'):
-                # if key is not starting with module, add it
                 name = 'module.' + k
             else:
                 name = k
@@ -48,7 +37,6 @@ def f_state_dict_wrapper(state_dict, data_parallel=False):
             if not k.startswith('module'):
                 name = k
             else:
-                # remove module.
                 name = k[7:] 
             new_state_dict[name] = v
         return new_state_dict
@@ -110,22 +98,15 @@ def f_load_pretrained_model_partially(model, model_paths, model_name_prefix):
 
     for model_path, prefix in zip(model_path_tmp, model_prefix_tmp):
         if prefix[-1] != '.':
-            # m_part1. not m_part
             prefix += '.'
         
         pretrained_dict = torch.load(model_path)
-        
-        # 1. filter out unnecessary keys
         pretrained_dict = {prefix + k: v \
                            for k, v in pretrained_dict.items() \
                            if prefix + k in model_dict}
         print("Load model {:s} as {:s} ({:d} parameter buffers)".format(
             model_path, prefix, len(pretrained_dict.keys())))
-        
-        # 2. overwrite entries in the existing state dict
         model_dict.update(pretrained_dict)
-        
-        # 3. load the new state dict
         model.load_state_dict(model_dict)
     return
 
@@ -183,8 +164,6 @@ def f_model_check(pt_model, model_type=None):
     
     for tmpkey in keywords_bag.keys():
         flag_mandatory, mes = keywords_bag[tmpkey]
-
-        # mandatory keywords
         if flag_mandatory:
             if not hasattr(pt_model, tmpkey):
                 nii_display.f_print("Please implement %s (%s)" % (tmpkey, mes))
@@ -196,7 +175,6 @@ def f_model_check(pt_model, model_type=None):
                 print("[OK]: %s is ignored, %s" % (tmpkey, mes))
             else:
                 print("[OK]: use %s, %s" % (tmpkey, mes))
-        # done
     nii_display.f_print("Model check done\n")
     return
 
@@ -242,22 +220,17 @@ def f_loss_check(loss_module, model_type=None):
 
     for tmpkey in keywords_bag.keys():
         flag_mandatory, mes = keywords_bag[tmpkey]
-
-        # mandatory keywords
         if flag_mandatory:
             if not hasattr(loss_module, tmpkey):
                 nii_display.f_print("Please implement %s (%s)" % (tmpkey, mes))
                 nii_display.f_die("[Error]: found no %s in Loss" % (tmpkey))
             else:
-                # no need to print other information here
                 pass #print("[OK]: %s found" % (tmpkey))
         else:
             if not hasattr(loss_module, tmpkey):
-                # no need to print other information here
                 pass #print("[OK]: %s is ignored, %s" % (tmpkey, mes))
             else:
                 print("[OK]: use %s, %s" % (tmpkey, mes))
-        # done
     nii_display.f_print("Loss check done\n")
     return
 
@@ -273,13 +246,8 @@ def f_loss_show(loss_module, do_loss_def_check=True, model_type=None):
     Return:
       None
     """
-    # no need to print other information here
-    # because loss is usually not a torch.Module
-
-    #nii_display.f_print("Loss infor:")
     if do_loss_def_check:
         f_loss_check(loss_module, model_type)
-    #print(loss_module)
     return
 
 if __name__ == "__main__":
