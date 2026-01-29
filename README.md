@@ -1,6 +1,6 @@
 HyperPotter: Spell the Charm of High-Order Interactions in Audio Deepfake Detection
 ===============
-This repository contains the code for the experiments described in the paper submitted to ICML. The implementation is provided for reproducibility and review purposes.
+This repository contains the code for the experiments described in the paper. The implementation is provided for reproducibility and review purposes.
 
 
 ## 1. Installation
