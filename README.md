@@ -11,6 +11,7 @@ $ conda env create -f environment.yml
 $ cd fairseq-a54021305d6b3c4c5959ac9395135f63202db8f1
 (This fairseq folder can be downloaded from https://github.com/pytorch/fairseq/tree/a54021305d6b3c4c5959ac9395135f63202db8f1)
 $ pip install --editable ./
+$ pip install -U hoi
 ```
 
 
@@ -52,3 +53,45 @@ CUDA_VISIBLE_DEVICES=0 python main.py --dev \
 --proto_banks_path='/path/to/proto_bank.pt'
 ```
 Pre-trained HyperPotter model are available [here](https://doi.org/10.5281/zenodo.18377410)
+
+### 2.5 Visualization
+
+We provide a visualization script for generating the high-order interaction heatmap used in our analysis.
+
+To run the visualization:
+
+```bash
+CUDA_VISIBLE_DEVICES=0 python oinfo_layer_overview.py \
+  --model-path /path/to/HyperPotter.pth \
+  --prototype-banks-path /path/to/proto_bank.pt \
+  --protocol-files ./protocols/InTheWild.txt \
+  --dataset-names ITW \
+  --splits - \
+  --output-dir ./outputs/oinfo_visualization
+```
+
+For multi-dataset analysis:
+```bash
+CUDA_VISIBLE_DEVICES=0 python oinfo_layer_overview.py \
+  --model-path /path/to/model.pth \
+  --prototype-banks-path /path/to/proto_banks.pt \
+  --protocol-files p1.txt p2.txt \
+  --dataset-names ASVspoof ITW \
+  --splits eval - \
+  --output-dir ./outputs/oinfo_visualization
+```
+The generated results will be saved to:
+
+```text
+outputs/oinfo_visualization/
+├── summary.csv
+└── ITW/
+    ├── sr_rank_heatmap_2x2.png
+    ├── summary.json
+    └── layer_details.json
+```
+
+The main visualization result is `sr_rank_heatmap_2x2.png`.  
+An example is shown below:
+
+![SR-rank heatmap example](./assets/hoi_our.png)
