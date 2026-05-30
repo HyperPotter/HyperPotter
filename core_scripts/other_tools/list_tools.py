@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 list_tools.py
 
@@ -11,6 +12,9 @@ import collections
 import core_scripts.other_tools.display as nii_warn
 import core_scripts.other_tools.str_tools as nii_str_tool
 
+__author__ = "Xin Wang"
+__email__ = "wangxin@nii.ac.jp"
+__copyright__ = "Copyright 2020, Xin Wang"
 
 
 def listdir_with_ext(file_dir, file_ext=None):
@@ -54,6 +58,10 @@ def common_members(list_a, list_b):
 
 
 def list_identical(list_a, list_b):
+    """ flag = list_identical(list_a, list_b)
+    Return true/false, check whether list_a is identical to list_b
+    stackoverflow.com/a/19244156/403423
+    """
     return collections.Counter(list_a) == collections.Counter(list_b)
 
 def list_b_in_list_a(list_a, list_b):

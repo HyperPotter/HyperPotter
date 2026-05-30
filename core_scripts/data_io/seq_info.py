@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 seq_info
 
@@ -9,6 +10,10 @@ from __future__ import absolute_import
 
 import os
 import sys
+
+__author__ = "Xin Wang"
+__email__ = "wangxin@nii.ac.jp"
+__copyright__ = "Copyright 2020, Xin Wang"
 
 
 class SeqInfo():
@@ -95,6 +100,10 @@ class SeqInfo():
 
     def seq_start_pos(self):
         return self.start_pos
+
+############
+### Util to parse the output from print_to_str
+############
 
 def parse_length(input_str):
     return int(input_str.split(',')[3])

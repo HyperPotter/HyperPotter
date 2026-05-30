@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 io_tools
 
@@ -11,6 +12,10 @@ import sys
 import json
 import pickle
 import numpy as np
+
+__author__ = "Xin Wang"
+__email__ = "wangxin@nii.ac.jp"
+__copyright__ = "Copyright 2021, Xin Wang"
 
 def f_read_raw_mat(filename, col, data_format='f4', end='l'):
     """data = f_read_raw_mat(filename, col, data_format='float', end='l')

@@ -881,6 +881,17 @@ class Model(nn.Module):
             gat_dims[0], gat_dims[1], n_clusters=20, temperature=temperatures[2])
         self.HtrgHGNN_layer_ST22 = HeterogeneousHGNNLayer(
             gat_dims[1], gat_dims[1], n_clusters=16, temperature=temperatures[2])
+        
+        # Graph pooling layers
+        self.pool_S = GraphPool(pool_ratios[0], gat_dims[0], 0.3)
+        self.pool_T = GraphPool(pool_ratios[1], gat_dims[0], 0.3)
+        self.pool_hS1 = GraphPool(pool_ratios[2], gat_dims[1], 0.3)
+        self.pool_hT1 = GraphPool(pool_ratios[2], gat_dims[1], 0.3)
+
+        self.pool_hS2 = GraphPool(pool_ratios[2], gat_dims[1], 0.3)
+        self.pool_hT2 = GraphPool(pool_ratios[2], gat_dims[1], 0.3)
+        
+        self.out_layer = nn.Linear(5 * gat_dims[1], 2)
 
         # Create a shared manager (prior pos=0.1 comes from the 1:9 ratio)
         self.proto_manager = ProtoMemoryManager(

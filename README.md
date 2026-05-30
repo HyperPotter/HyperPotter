@@ -95,3 +95,7 @@ The main visualization result is `sr_rank_heatmap_2x2.png`.
 An example is shown below:
 
 ![SR-rank heatmap example](./assets/hoi_our.png)
+
+## 3. Acknowledgements
+
+This work was supported by the Shanghai Municipal Special Program for Basic Research on General AI Foundation Models (Grant No. 2025SHZDZX025G17), in collaboration with Shanghai Artificial Intelligence Laboratory.

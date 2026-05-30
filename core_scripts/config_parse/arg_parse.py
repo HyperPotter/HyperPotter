@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+"""
+config_parse
+
+Argument parse
+
+"""
 from __future__ import absolute_import
 
 import os
@@ -6,6 +13,10 @@ import argparse
 
 import core_scripts.other_tools.list_tools as nii_list_tools
 import core_scripts.other_tools.display as nii_display
+
+__author__ = "Xin Wang"
+__email__ = "wangxin@nii.ac.jp"
+__copyright__ = "Copyright 2020, Xin Wang"
 
 
 

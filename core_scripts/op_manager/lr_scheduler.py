@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 op_manager
 
@@ -15,6 +16,10 @@ import torch.optim.lr_scheduler as torch_optim_steplr
 
 import core_scripts.other_tools.display as nii_warn
 
+__author__ = "Xin Wang"
+__email__ = "wangxin@nii.ac.jp"
+__copyright__ = "Copyright 2020, Xin Wang"
+
 
 
 class LRScheduler():
@@ -22,17 +27,28 @@ class LRScheduler():
     
     """
     def __init__(self, optimizer, args):        
+        
+        # learning rate decay
         self.lr_decay = args.lr_decay_factor
+
+        # lr scheduler type 
+        # please check arg_parse.py for the number ID
         self.lr_scheduler_type = args.lr_scheduler_type
+        
+        # patentience for ReduceLROnPlateau
         self.lr_patience = 5
+
+        # step size for stepLR
         self.lr_stepLR_size = 10
 
         if self.lr_decay > 0:
             if self.lr_scheduler_type == 1:
+                # StepLR
                 self.lr_scheduler = torch.optim.lr_scheduler.StepLR(
                     optimizer=optimizer, step_size=self.lr_stepLR_size, 
                     gamma=self.lr_decay)
             else:
+                # by default, ReduceLROnPlateau
                 if args.no_best_epochs < 0:
                     self.lr_patience = 5
                     nii_warn.f_print("--no-best-epochs is set to 5 ")
@@ -103,6 +119,7 @@ class LRScheduler():
             if self.lr_scheduler_type == 1:
                 return True
             else:
+                # ReduceLROnPlateau no need to use early stopping
                 return False
         else:
             return True

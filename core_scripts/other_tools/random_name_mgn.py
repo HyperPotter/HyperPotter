@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 Random name manager
 
@@ -10,6 +11,9 @@ import sys
 from core_scripts.other_tools import list_tools
 from core_scripts.data_io import io_tools
 
+__author__ = "Xin Wang"
+__email__ = "wangxin@nii.ac.jp"
+__copyright__ = "Copyright 2021, Xin Wang"
 
 def list_loader(list_file):
     """ output_list = list_loader(list_file)
@@ -40,13 +44,21 @@ class RandomNameMgn:
         """
         if verbose:
             print("Loading random name tables")
+            
+        ## For unused random name list
+        # load entries in the list
         self.unused_entries = list_loader(file_random_name_list)
+        # prepare dictionary
         self.mapper = {x : None for x in self.unused_entries}
+        # reverse dictionary
         self.mapper_rev = {}
+
+        # print some informaiton
         if verbose:
             self.print_info()
 
         self.verbose = verbose
+        # done
         return
 
     def print_info(self):

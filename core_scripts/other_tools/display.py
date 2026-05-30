@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 dispaly.py
 
@@ -11,6 +12,9 @@ import os
 import sys
 import datetime
 
+__author__ = "Xin Wang"
+__email__ = "wangxin@nii.ac.jp"
+__copyright__ = "Copyright 2020, Xin Wang"
 
 
 class DisplayColors:

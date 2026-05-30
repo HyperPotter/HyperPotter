@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 op_manager
 
@@ -21,6 +22,9 @@ import core_scripts.op_manager.conf as nii_op_config
 import core_scripts.op_manager.op_process_monitor as nii_op_monitor
 import core_scripts.op_manager.lr_scheduler as nii_lr_scheduler
 
+__author__ = "Xin Wang"
+__email__ = "wangxin@nii.ac.jp"
+__copyright__ = "Copyright 2020, Xin Wang"
 
 
 class OptimizerWrapper():
@@ -29,13 +33,20 @@ class OptimizerWrapper():
     def __init__(self, model, args):
         """ Initialize an optimizer over model.parameters()
         """
+        # check valildity of model
         if not hasattr(model, "parameters"):
             nii_warn.f_print("model is not torch.nn", "error")
             nii_warn.f_die("Error in creating OptimizerWrapper")
+
+        # set optimizer type
         self.op_flag = args.optimizer
         self.lr = args.lr
         self.l2_penalty = args.l2_penalty
+
+        # grad clip norm is directly added in nn_manager
         self.grad_clip_norm = args.grad_clip_norm
+
+        # create optimizer
         if self.op_flag == "Adam":
             if self.l2_penalty > 0:
                 self.optimizer = torch_optim.Adam(model.parameters(), 
@@ -49,8 +60,12 @@ class OptimizerWrapper():
             nii_warn.f_print("%s not availabel" % (self.op_flag),
                              "error")
             nii_warn.f_die("Please change optimizer")
+
+        # number of epochs
         self.epochs = args.epochs
         self.no_best_epochs = args.no_best_epochs
+        
+        # lr scheduler
         self.lr_scheduler = nii_lr_scheduler.LRScheduler(self.optimizer, args)
         return
 
@@ -78,6 +93,7 @@ class OptimizerWrapper():
     def get_lr_info(self):
         
         if self.lr_scheduler.f_valid():
+            # no way to look into the updated lr rather than using _last_lr
             tmp = ''
             for updated_lr in self.lr_scheduler.f_last_lr():
                 if np.abs(self.lr - updated_lr) > 0.0000001:

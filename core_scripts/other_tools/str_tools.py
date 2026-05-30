@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 str_tools
 
@@ -8,6 +9,9 @@ from __future__ import absolute_import
 import os
 import sys
 
+__author__ = "Xin Wang"
+__email__ = "wangxin@nii.ac.jp"
+__copyright__ = "Copyright 2020, Xin Wang"
 
 
 def f_realpath(f_dir, f_name, f_ext):

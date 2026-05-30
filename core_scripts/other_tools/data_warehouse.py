@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 data_warehouse
 
@@ -12,6 +13,9 @@ import numpy as np
 
 from core_scripts.other_tools import list_tools
 
+__author__ = "Xin Wang"
+__email__ = "wangxin@nii.ac.jp"
+__copyright__ = "Copyright 2021, Xin Wang"
 
 class DataEntry:
     """DataEntry to store data for one entry
@@ -73,22 +77,34 @@ class DataWarehouse:
         self.data_entries = self._parse_file()
         
     def _parse_file(self):
+        # load list
         data_content = list_tools.read_list_from_text(self.file_path)
         
         for data_entry in data_content:
+            # iterate over parse methods
             for parse_v_method, parse_t_method in \
                 zip(self.parse_v_methods, self.parse_t_methods):
+                
+                # get value
                 data_value = parse_v_method(data_entry)
+                # get tag
                 tags = [x(data_entry) for x in parse_t_method]
+                
+                # skip invalid line
                 if data_value is None or None in tags:
                     continue
+                    
+                # create data entry
                 tmp_data_entry = DataEntry(data_value, tags)
                 self.data_list.append(tmp_data_entry)
+                
+                # add tag to the self.tag_list
                 for tag_id, tag_val in enumerate(tags):
                     self._add_tag(tag_id, tag_val)
         return
     
     def _add_tag(self, tag_id, tag_val):
+        # collect all possible tags for the tag_id-th tag
         if tag_id in self.tag_list:
             if not tag_val in self.tag_list[tag_id]:
                 self.tag_list[tag_id].append(tag_val)
@@ -119,7 +135,9 @@ class DataWarehouse:
     def _to_numpy(self, data_list, dims, statistics):
         """ convert data_list to numpy
         """
+        # maximum length of one data entry
         max_length = max([len(x) for x in data_list])
+        # create data array
         if statistics is None:
             data_array = np.ones([np.prod(dims), max_length]) * np.inf
 

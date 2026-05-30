@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 op_process_monitor
 
@@ -12,6 +13,9 @@ import numpy as np
 
 import core_scripts.other_tools.display as nii_display
 
+__author__ = "Xin Wang"
+__email__ = "wangxin@nii.ac.jp"
+__copyright__ = "Copyright 2020, Xin Wang"
 
 
 class Monitor():
@@ -50,6 +54,7 @@ class Monitor():
         state_dic['best_error'] = self.best_error
         state_dic['best_epoch'] = self.best_epoch
         state_dic['loss_flag'] = self.loss_flag
+        # no need to save self.seq_names
         return state_dic
 
     def load_state_dic(self, state_dic):
@@ -69,6 +74,7 @@ class Monitor():
                 self.loss_mat = state_dic['loss_mat']
                 self.time_mat = state_dic['time_mat']
             else:
+                # if training epoch is increased, resize the shape
                 tmp_loss_mat = state_dic['loss_mat']
                 self.loss_mat = np.resize(
                     self.loss_mat, 
@@ -77,6 +83,7 @@ class Monitor():
                 self.time_mat[0:tmp_loss_mat.shape[0]] = state_dic['time_mat']
 
             self.seq_num = state_dic['seq_num']
+            # since the saved cur_epoch has been finished
             self.cur_epoch = state_dic['cur_epoch'] + 1
             self.best_error = state_dic['best_error']
             self.best_epoch = state_dic['best_epoch']
@@ -107,6 +114,7 @@ class Monitor():
         return np.sum(self.time_mat[epoch, :])
     
     def get_loss(self, epoch):
+        # return a array
         return np.mean(self.loss_mat[epoch, :], axis=0)
 
     def get_epoch(self):
@@ -116,6 +124,7 @@ class Monitor():
         return self.epoch_num
 
     def _get_loss_for_learning_stopping(self, epoch_idx):
+        # compute the average loss values
         if epoch_idx > self.cur_epoch:
             nii_display.f_print("To find loss for future epochs", 'error')
             nii_display.f_die("Op_process_monitor: error")
@@ -123,6 +132,7 @@ class Monitor():
             nii_display.f_print("To find loss for NULL epoch", 'error')
             nii_display.f_die("Op_process_monitor: error")
         loss_this = np.sum(self.loss_mat[epoch_idx, :, :], axis=0)
+        # compute only part of the loss for early stopping when necessary
         loss_this = np.sum(loss_this * self.loss_flag)
         return loss_this
 
@@ -167,6 +177,15 @@ class Monitor():
         check whether to stop training early
         """
         if (self.cur_epoch - self.best_epoch) >= no_best_epoch_num:
+            #
+            #tmp = []
+            #for idx in np.arange(no_best_epoch_num+1):
+            #    tmp.append(self._get_loss_for_learning_stopping(
+            #        self.cur_epoch - idx))
+            #if np.sum(np.diff(tmp) < 0) >= no_best_epoch_num:
+            #    return True
+            #else:
+            #    return False
             return True
         else:
             return False

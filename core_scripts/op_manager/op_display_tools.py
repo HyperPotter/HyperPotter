@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 op_display_tools
 
@@ -11,6 +12,9 @@ import numpy as np
 
 import core_scripts.other_tools.display as nii_display
 
+__author__ = "Xin Wang"
+__email__ = "wangxin@nii.ac.jp"
+__copyright__ = "Copyright 2020, Xin Wang"
 
 
 def print_gen_info(seq_name, time):
@@ -40,6 +44,8 @@ def print_train_info(epoch, time_tr, loss_tr, time_val,
     mes = mes + "{:>12.1f} | ".format(time_tr + time_val)
     mes += _print_loss(loss_tr)
     mes += _print_loss(loss_val)
+    #mes = mes + "{:>12.4f} | ".format(loss_tr)
+    #mes = mes + "{:>12.4f} | ".format(loss_val)    
     if isbest:
         mes = mes + "{:>5s}".format("yes")
     else:

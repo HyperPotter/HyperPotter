@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 random.py
 
@@ -13,12 +14,22 @@ import random
 
 import core_scripts.other_tools.display as nii_display
 
+__author__ = "Xin Wang"
+__email__ = "wangxin@nii.ac.jp"
+__copyright__ = "Copyright 2021, Xin Wang"
+
+##############
+# Shuffling tools
+##############
 
 def f_shuffle_slice_inplace(input_list, slice_start=None, slice_stop=None):
     """ shuffle_slice(input_list, slice_start, slice_stop)
     
     Shuffling input list (in place) in the range specified by slice_start
     and slice_stop.
+
+    Based on Knuth shuffling 
+    https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
 
     input
     -----
@@ -44,6 +55,7 @@ def f_shuffle_slice_inplace(input_list, slice_start=None, slice_stop=None):
     idx = slice_start
     while (idx < slice_stop - 1):
         idx_swap = random.randrange(idx, slice_stop)
+        # naive swap
         tmp = input_list[idx_swap]
         input_list[idx_swap] = input_list[idx]
         input_list[idx] = tmp
@@ -73,10 +85,13 @@ def f_shuffle_in_block_inplace(input_list, block_size):
       None: shuffling is done in place
     """
     if block_size <= 1:
+        # no need to shuffle if block size if 1
         return
     else:
         list_length = len(input_list)
+        # range( -(- x // y) ) -> int(ceil(x / y))
         for iter_idx in range( -(-list_length // block_size) ):
+            # shuffle within each block
             f_shuffle_slice_inplace(
                 input_list, iter_idx * block_size, (iter_idx+1) * block_size)
         return
@@ -103,6 +118,7 @@ def f_shuffle_blocks_inplace(input_list, block_size):
     ------
       None: shuffling is done in place
     """
+    # new list
     tmp_list = input_list.copy()
 
     block_number = len(input_list) // block_size
